@@ -172,7 +172,9 @@ config ARCH_MSM8937
 	bool "Enable Support for Qualcomm Technologies Inc. MSM8937"
 	depends on ARCH_QCOM
 	select CPU_FREQ_QCOM
-	select COMMON_CLK_MSM
+	select COMMON_CLK
+	select COMMON_CLK_QCOM
+	select QCOM_GDSC
 	help
 	  This enables support for the MSM8937 chipset. If you do not
 	  wish to build a kernel that runs on this chipset, say 'N' here.
@@ -181,7 +183,9 @@ config ARCH_MSM8940
 	bool "Enable Support for Qualcomm Technologies Inc. MSM8940"
 	depends on ARCH_QCOM
 	select CPU_FREQ_QCOM
-	select COMMON_CLK_MSM
+	select COMMON_CLK
+	select COMMON_CLK_QCOM
+	select QCOM_GDSC
 	help
 	  This enables support for the MSM8940 chipset. If you do not
 	  wish to build a kernel that runs on this chipset, say 'N' here.
@@ -190,7 +194,9 @@ config ARCH_MSM8917
 	bool "Enable Support for Qualcomm Technologies Inc. MSM8917"
 	depends on ARCH_QCOM
 	select CPU_FREQ_QCOM
-	select COMMON_CLK_MSM
+	select COMMON_CLK
+	select COMMON_CLK_QCOM
+	select QCOM_GDSC
 	help
 	  This enables support for the MSM8917 chipset. If you do not
 	  wish to build a kernel that runs on this chipset, say 'N' here.
