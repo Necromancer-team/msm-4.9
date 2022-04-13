@@ -1,4 +1,4 @@
-/* Copyright (c) 2013-2018, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2013-2019, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -12,7 +12,7 @@
 
 #ifndef __MDSS_PLL_H
 #define __MDSS_PLL_H
-#include <linux/sde_io_util.h>
+
 #include <linux/clk-provider.h>
 #include <linux/io.h>
 #include <linux/clk.h>
@@ -22,6 +22,11 @@
 #include "../clk-regmap-divider.h"
 #include "../clk-regmap-mux.h"
 
+#if defined(CONFIG_DRM)
+#include <linux/sde_io_util.h>
+#else
+#include <linux/mdss_io_util.h>
+#endif
 
 #define MDSS_PLL_REG_W(base, offset, data)	\
 				writel_relaxed((data), (base) + (offset))
@@ -40,6 +45,13 @@
 enum {
 	MDSS_DSI_PLL_10NM,
 	MDSS_DP_PLL_10NM,
+	MDSS_DSI_PLL_7NM,
+	MDSS_DSI_PLL_7NM_V2,
+	MDSS_DP_PLL_7NM,
+	MDSS_DSI_PLL_28LPM,
+	MDSS_DSI_PLL_14NM,
+	MDSS_DP_PLL_14NM,
+	MDSS_HDMI_PLL_28LPM,
 	MDSS_UNKNOWN_PLL,
 };
 
@@ -69,7 +81,7 @@ struct dfps_info {
 struct mdss_pll_resources {
 
 	/* Pll specific resources like GPIO, power supply, clocks, etc*/
-	struct dss_module_power mp;
+	struct mdss_module_power mp;
 
 	/*
 	 * dsi/edp/hmdi plls' base register, phy, gdsc and dynamic refresh
@@ -95,6 +107,10 @@ struct mdss_pll_resources {
 	u32		cached_cfg0;
 	u32		cached_cfg1;
 	u32		cached_outdiv;
+
+	u32		cached_postdiv1;
+	u32		cached_postdiv3;
+	u32		cached_vreg_cfg;
 
 	/* dsi/edp/hmdi pll interface type */
 	u32		pll_interface_type;
@@ -235,6 +251,6 @@ int mdss_pll_util_resource_enable(struct mdss_pll_resources *pll_res,
 								bool enable);
 int mdss_pll_util_resource_parse(struct platform_device *pdev,
 				struct mdss_pll_resources *pll_res);
-struct dss_vreg *mdss_pll_get_mp_by_reg_name(struct mdss_pll_resources *pll_res
+struct mdss_vreg *mdss_pll_get_mp_by_reg_name(struct mdss_pll_resources *pll_res
 		, char *name);
 #endif
