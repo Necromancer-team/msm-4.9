@@ -23,7 +23,7 @@
 #include "reset.h"
 #include "vdd-level-sdm429w.h"
 
-#define F_SLEW(f, s, h, m, n, sf) { (f), (s), (2 * (h) - 1), (m), (n), (sf) }
+#define F(f, s, h, m, n) { (f), (s), (2 * (h) - 1), (m), (n) }
 
 static DEFINE_VDD_REGULATORS(vdd_cx, VDD_NUM, 1, vdd_corner);
 
@@ -363,7 +363,6 @@ static const char * const gcc_parent_names_20[] = {
 
 static struct clk_alpha_pll gpll0_sleep_clk_src = {
 	.offset = 0x21000,
-	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
 	.clkr = {
 		.enable_reg = 0x45008,
 		.enable_mask = BIT(23),
@@ -377,14 +376,8 @@ static struct clk_alpha_pll gpll0_sleep_clk_src = {
 	},
 };
 
-static unsigned int soft_vote_gpll0;
-
 static struct clk_alpha_pll gpll0_out_main = {
 	.offset = 0x21000,
-	.soft_vote = &soft_vote_gpll0,
-	.soft_vote_mask = PLL_SOFT_VOTE_PRIMARY,
-	.flags = SUPPORTS_FSM_MODE,
-	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
 	.clkr = {
 		.enable_reg = 0x45000,
 		.enable_mask = BIT(0),
@@ -411,10 +404,6 @@ static struct clk_fixed_factor gpll0_out_aux = {
 
 static struct clk_alpha_pll gpll0_ao_out_main = {
 	.offset = 0x21000,
-	.soft_vote = &soft_vote_gpll0,
-	.soft_vote_mask = PLL_SOFT_VOTE_CPU,
-	.flags = SUPPORTS_FSM_MODE,
-	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
 	.clkr = {
 		.enable_reg = 0x45000,
 		.enable_mask = BIT(0),
@@ -428,18 +417,13 @@ static struct clk_alpha_pll gpll0_ao_out_main = {
 };
 
 /* 750MHz configuration */
-static struct alpha_pll_config gpll3_config = {
+static struct pll_config gpll3_config = {
 	.l = 0x27,
-	.alpha = 0x0,
-	.alpha_hi = 0x10,
-	.alpha_en_mask = BIT(24),
 	.post_div_mask = 0xf << 8,
 	.post_div_val = 0x1 << 8,
 	.vco_mask = 0x3 << 20,
 	.main_output_mask = 0x1,
 	.config_ctl_val = 0x4001055b,
-	.test_ctl_hi_val = 0x40000600,
-	.test_ctl_hi_mask = 0xffffffff,
 };
 
 static struct pll_vco gpll3_vco[] = {
@@ -448,16 +432,14 @@ static struct pll_vco gpll3_vco[] = {
 
 static struct clk_alpha_pll gpll3_out_main = {
 	.offset = 0x22000,
-	.flags = SUPPORTS_SLEW,
 	.vco_table = gpll3_vco,
 	.num_vco = ARRAY_SIZE(gpll3_vco),
-	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
 	.clkr = {
 		.hw.init = &(struct clk_init_data){
 			.name = "gpll3_out_main",
 			.parent_names = (const char *[]){ "bi_tcxo" },
 			.num_parents = 1,
-			.ops = &clk_alpha_pll_slew_ops,
+			.ops = &clk_alpha_pll_ops,
 			.vdd_class = &vdd_cx,
 			.num_rate_max = VDD_NUM,
 			.rate_max = (unsigned long[VDD_NUM]) {
@@ -481,7 +463,6 @@ static struct clk_fixed_factor gpll3_out_main_div = {
 
 static struct clk_alpha_pll gpll4_out_main = {
 	.offset = 0x24000,
-	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
 	.clkr = {
 		.enable_reg = 0x45000,
 		.enable_mask = BIT(5),
@@ -1708,46 +1689,46 @@ static struct clk_rcg2 gcc_xo_clk_src = {
 };
 
 static const struct freq_tbl ftbl_gfx3d_clk_src[] = {
-	F_SLEW(19200000, P_BI_TCXO, 1, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW(50000000, P_GPLL0_OUT_MAIN, 16, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW(80000000, P_GPLL0_OUT_MAIN, 10, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW(100000000, P_GPLL0_OUT_MAIN, 8, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW(160000000, P_GPLL0_OUT_MAIN, 5, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW(200000000, P_GPLL0_OUT_MAIN, 4, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW(216000000, P_GPLL6_OUT_AUX, 5, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW(228571429, P_GPLL0_OUT_MAIN, 3.5, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW(240000000, P_GPLL6_OUT_AUX, 4.5, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW(266666667, P_GPLL0_OUT_MAIN, 3, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW(320000000, P_GPLL0_OUT_MAIN, 2.5, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW(355200000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0, 710400000),
-	F_SLEW(375000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0, 750000000),
-	F_SLEW(400000000, P_GPLL0_OUT_MAIN, 2, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW(450000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0, 900000000),
-	F_SLEW(510000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0, 1020000000),
-	F_SLEW(560000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0, 1120000000),
-	F_SLEW(650000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0, 1300000000),
+	F(19200000, P_BI_TCXO, 1, 0, 0),
+	F(50000000, P_GPLL0_OUT_MAIN, 16, 0, 0),
+	F(80000000, P_GPLL0_OUT_MAIN, 10, 0, 0),
+	F(100000000, P_GPLL0_OUT_MAIN, 8, 0, 0),
+	F(160000000, P_GPLL0_OUT_MAIN, 5, 0, 0),
+	F(200000000, P_GPLL0_OUT_MAIN, 4, 0, 0),
+	F(216000000, P_GPLL6_OUT_AUX, 5, 0, 0),
+	F(228571429, P_GPLL0_OUT_MAIN, 3.5, 0, 0),
+	F(240000000, P_GPLL6_OUT_AUX, 4.5, 0, 0),
+	F(266666667, P_GPLL0_OUT_MAIN, 3, 0, 0),
+	F(320000000, P_GPLL0_OUT_MAIN, 2.5, 0, 0),
+	F(355200000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0),
+	F(375000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0),
+	F(400000000, P_GPLL0_OUT_MAIN, 2, 0, 0),
+	F(450000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0),
+	F(510000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0),
+	F(560000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0),
+	F(650000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0),
 	{ }
 };
 
 static struct freq_tbl ftbl_oxili_gfx3d_clk_src_qm215[] = {
-	F_SLEW( 19200000, P_BI_TCXO, 1, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW( 50000000, P_GPLL0_OUT_MAIN, 16, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW( 80000000, P_GPLL0_OUT_MAIN, 10, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW( 100000000, P_GPLL0_OUT_MAIN, 8, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW( 160000000, P_GPLL0_OUT_MAIN, 5, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW( 200000000, P_GPLL0_OUT_MAIN, 4, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW( 228570000, P_GPLL0_OUT_MAIN, 3.5, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW( 240000000, P_GPLL6_OUT_AUX, 4.5, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW( 266670000, P_GPLL0_OUT_MAIN, 3, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW( 270000000, P_GPLL6_OUT_AUX, 4, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW( 320000000, P_GPLL0_OUT_MAIN, 2.5, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW( 400000000, P_GPLL0_OUT_MAIN, 2, 0, 0, FIXED_FREQ_SRC),
-	F_SLEW( 465000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0, 930000000),
-	F_SLEW( 484800000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0, 969600000),
-	F_SLEW( 500000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0, 1000000000),
-	F_SLEW( 523200000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0, 1046400000),
-	F_SLEW( 550000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0, 1100000000),
-	F_SLEW( 598000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0, 1196000000),
+	F( 19200000, P_BI_TCXO, 1, 0, 0),
+	F( 50000000, P_GPLL0_OUT_MAIN, 16, 0, 0),
+	F( 80000000, P_GPLL0_OUT_MAIN, 10, 0, 0),
+	F( 100000000, P_GPLL0_OUT_MAIN, 8, 0, 0),
+	F( 160000000, P_GPLL0_OUT_MAIN, 5, 0, 0),
+	F( 200000000, P_GPLL0_OUT_MAIN, 4, 0, 0),
+	F( 228570000, P_GPLL0_OUT_MAIN, 3.5, 0, 0),
+	F( 240000000, P_GPLL6_OUT_AUX, 4.5, 0, 0),
+	F( 266670000, P_GPLL0_OUT_MAIN, 3, 0, 0),
+	F( 270000000, P_GPLL6_OUT_AUX, 4, 0, 0),
+	F( 320000000, P_GPLL0_OUT_MAIN, 2.5, 0, 0),
+	F( 400000000, P_GPLL0_OUT_MAIN, 2, 0, 0),
+	F( 465000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0),
+	F( 484800000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0),
+	F( 500000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0),
+	F( 523200000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0),
+	F( 550000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0),
+	F( 598000000, P_GPLL3_OUT_MAIN_DIV, 1, 0, 0),
 	{ }
 };
 
@@ -4195,7 +4176,6 @@ static void fixup_for_qm215(struct platform_device *pdev,
 	struct regmap *regmap, int speed_bin)
 {
 	gpll3_config.l = 0x30;
-	gpll3_config.alpha_hi = 0x70;
 
 	vfe0_clk_src.clkr.hw.init->rate_max[VDD_LOW] = 160000000;
 	vfe0_clk_src.clkr.hw.init->rate_max[VDD_LOW_L1] = 266670000;
