@@ -595,9 +595,69 @@ static const struct rpm_smd_clk_desc rpm_clk_msm8974 = {
 	.num_clks = ARRAY_SIZE(msm8974_clks),
 };
 
+
+/* msm8937 SMD clocks */
+DEFINE_CLK_SMD_RPM_BRANCH(msm8937, bi_tcxo, bi_tcxo_ao,
+					QCOM_SMD_RPM_MISC_CLK, 0, 19200000);
+DEFINE_CLK_SMD_RPM(msm8937, pnoc_clk, pnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 0);
+DEFINE_CLK_SMD_RPM(msm8937, bimc_clk, bimc_a_clk, QCOM_SMD_RPM_MEM_CLK, 0);
+DEFINE_CLK_SMD_RPM(msm8937, bimc_gpu_clk, bimc_gpu_a_clk, QCOM_SMD_RPM_MEM_CLK, 2);
+DEFINE_CLK_SMD_RPM(msm8937, snoc_clk, snoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 1);
+DEFINE_CLK_SMD_RPM(msm8937, sysmmnoc_clk, sysmmnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 2);
+//DEFINE_CLK_SMD_RPM(msm8937, ipa_clk, ipa_a_clk, QCOM_SMD_RPM_IPA_CLK, 0);
+DEFINE_CLK_SMD_RPM_QDSS(msm8937, qdss_clk, qdss_a_clk, QCOM_SMD_RPM_MISC_CLK, 1);
+
+DEFINE_CLK_SMD_RPM_XO_BUFFER(msm8937, bb_clk1, bb_clk1_a, 1);
+DEFINE_CLK_SMD_RPM_XO_BUFFER(msm8937, bb_clk2, bb_clk2_a, 2);
+DEFINE_CLK_SMD_RPM_XO_BUFFER(msm8937, rf_clk2, rf_clk2_a, 5);
+DEFINE_CLK_SMD_RPM_XO_BUFFER(msm8937, div_clk2, div_clk2_a, 0xc);
+
+DEFINE_CLK_SMD_RPM_XO_BUFFER_PINCTRL(msm8937, bb_clk1_pin, bb_clk1_a_pin, 1);
+DEFINE_CLK_SMD_RPM_XO_BUFFER_PINCTRL(msm8937, bb_clk2_pin, bb_clk2_a_pin, 2);
+
+static struct clk_hw *msm8937_clks[] = {
+	[RPM_SMD_XO_CLK_SRC] = &msm8937_bi_tcxo.hw,
+	[RPM_SMD_XO_A_CLK_SRC] = &msm8937_bi_tcxo_ao.hw,
+	[RPM_SMD_QDSS_CLK] = &msm8937_qdss_clk.hw,
+	[RPM_SMD_QDSS_A_CLK] = &msm8937_qdss_a_clk.hw,
+	[RPM_SMD_PNOC_CLK] = &msm8937_pnoc_clk.hw,
+	[RPM_SMD_PNOC_A_CLK] = &msm8937_pnoc_a_clk.hw,
+	[RPM_SMD_SNOC_CLK] = &msm8937_snoc_clk.hw,
+	[RPM_SMD_SNOC_A_CLK] = &msm8937_snoc_a_clk.hw,
+	[RPM_SMD_BIMC_CLK] = &msm8937_bimc_clk.hw,
+	[RPM_SMD_BIMC_A_CLK] = &msm8937_bimc_a_clk.hw,
+	[RPM_SMD_BIMC_GPU_CLK] = &msm8937_bimc_gpu_clk.hw,
+	[RPM_SMD_BIMC_GPU_A_CLK] = &msm8937_bimc_gpu_a_clk.hw,
+	[RPM_SMD_SYSMMNOC_CLK] = &msm8937_sysmmnoc_clk.hw,
+	[RPM_SMD_SYSMMNOC_A_CLK] = &msm8937_sysmmnoc_a_clk.hw,
+	//[RPM_SMD_IPA_CLK]        = &msm8937_ipa_clk.hw,
+	//[RPM_SMD_IPA_A_CLK]      = &msm8937_ipa_a_clk.hw,
+	[RPM_SMD_BB_CLK1] = &msm8937_bb_clk1.hw,
+	[RPM_SMD_BB_CLK1_A] = &msm8937_bb_clk1_a.hw,
+	[RPM_SMD_BB_CLK2] = &msm8937_bb_clk2.hw,
+	[RPM_SMD_BB_CLK2_A] = &msm8937_bb_clk2_a.hw,
+	[RPM_SMD_BB_CLK1_PIN] = &msm8937_bb_clk1_pin.hw,
+	[RPM_SMD_BB_CLK1_A_PIN] = &msm8937_bb_clk1_a_pin.hw,
+	[RPM_SMD_BB_CLK2_PIN] = &msm8937_bb_clk2_pin.hw,
+	[RPM_SMD_BB_CLK2_A_PIN] = &msm8937_bb_clk2_a_pin.hw,
+	[RPM_SMD_RF_CLK2] = &msm8937_rf_clk2.hw,
+	[RPM_SMD_RF_CLK2_A] = &msm8937_rf_clk2_a.hw,
+	[RPM_SMD_DIV_CLK2] = &msm8937_div_clk2.hw,
+	[RPM_SMD_DIV_A_CLK2] = &msm8937_div_clk2_a.hw,
+};
+
+static const struct rpm_smd_clk_desc rpm_clk_msm8937 = {
+	.clks = msm8937_clks,
+	.num_rpm_clks = RPM_SMD_SYSMMNOC_A_CLK,
+	.num_clks = ARRAY_SIZE(msm8937_clks),
+};
+
 static const struct of_device_id rpm_smd_clk_match_table[] = {
 	{ .compatible = "qcom,rpmcc-msm8916", .data = &rpm_clk_msm8916 },
 	{ .compatible = "qcom,rpmcc-msm8974", .data = &rpm_clk_msm8974 },
+	{ .compatible = "qcom,rpmcc-msm8917", .data = &rpm_clk_msm8937 },
+	{ .compatible = "qcom,rpmcc-msm8937", .data = &rpm_clk_msm8937 },
+	{ .compatible = "qcom,rpmcc-msm8940", .data = &rpm_clk_msm8937 },
 	{ }
 };
 MODULE_DEVICE_TABLE(of, rpm_smd_clk_match_table);
@@ -608,10 +668,19 @@ static int rpm_smd_clk_probe(struct platform_device *pdev)
 	struct clk *clk;
 	struct rpm_cc *rcc;
 	struct clk_onecell_data *data;
-	int ret;
+	int ret, is_msm8917, is_msm8937, is_msm8940;
 	size_t num_clks, i;
 	struct clk_hw **hw_clks;
 	const struct rpm_smd_clk_desc *desc;
+
+	is_msm8917 = of_device_is_compatible(pdev->dev.of_node,
+						"qcom,rpmcc-msm8917");
+
+	is_msm8937 = of_device_is_compatible(pdev->dev.of_node,
+						"qcom,rpmcc-msm8937");
+
+	is_msm8940 = of_device_is_compatible(pdev->dev.of_node,
+						"qcom,rpmcc-msm8940");
 
 	desc = of_device_get_match_data(&pdev->dev);
 	if (!desc)
@@ -629,6 +698,19 @@ static int rpm_smd_clk_probe(struct platform_device *pdev)
 	data = &rcc->data;
 	data->clks = clks;
 	data->clk_num = num_clks;
+
+	if (is_msm8917) {
+		rpm_clk_msm8937.clks[RPM_SMD_IPA_CLK] = NULL;
+		rpm_clk_msm8937.clks[RPM_SMD_IPA_A_CLK] = NULL;
+	} else if(is_msm8937) {
+		rpm_clk_msm8937.clks[RPM_SMD_BIMC_GPU_CLK] = NULL;
+		rpm_clk_msm8937.clks[RPM_SMD_BIMC_GPU_A_CLK] = NULL;
+		//rpm_clk_msm8937.clks[RPM_SMD_IPA_CLK] = NULL;
+		//rpm_clk_msm8937.clks[RPM_SMD_IPA_A_CLK] = NULL;
+	} else if(is_msm8940) {
+		rpm_clk_msm8937.clks[RPM_SMD_BIMC_GPU_CLK] = NULL;
+		rpm_clk_msm8937.clks[RPM_SMD_BIMC_GPU_A_CLK] = NULL;
+	}
 
 	for (i = 0; i <= desc->num_rpm_clks; i++) {
 		if (!hw_clks[i]) {
@@ -675,6 +757,10 @@ static int rpm_smd_clk_probe(struct platform_device *pdev)
 				  data);
 	if (ret)
 		goto err;
+
+	if (is_msm8917 || is_msm8937 || is_msm8940) {
+		clk_prepare_enable(msm8937_bi_tcxo_ao.hw.clk);
+	}
 
 	dev_info(&pdev->dev, "Registered RPM clocks\n");
 
