@@ -31,9 +31,6 @@
 			qcom,base-name = "bimc-base";
 			qcom,bus-type = <2>;
 			qcom,util-fact = <154>;
-			clock-names = "bus_clk", "bus_a_clk";
-			clocks = <&rpmcc BIMC_MSMBUS_CLK>,
-				<&rpmcc BIMC_MSMBUS_A_CLK>;
 		};
 
 		fab_pcnoc: fab-pcnoc {
@@ -44,9 +41,6 @@
 			qcom,base-offset = <0x7000>;
 			qcom,qos-off = <0x1000>;
 			qcom,bus-type = <1>;
-			clock-names = "bus_clk", "bus_a_clk";
-			clocks = <&rpmcc PNOC_MSMBUS_CLK>,
-				<&rpmcc PNOC_MSMBUS_A_CLK>;
 		};
 
 		fab_snoc: fab-snoc {
@@ -57,9 +51,6 @@
 			qcom,base-offset = <0x7000>;
 			qcom,qos-off = <0x1000>;
 			qcom,bus-type = <1>;
-			clock-names = "bus_clk", "bus_a_clk";
-			clocks = <&rpmcc SNOC_MSMBUS_CLK>,
-				<&rpmcc SNOC_MSMBUS_A_CLK>;
 		};
 
 		fab_snoc_mm: fab-snoc-mm {
@@ -71,9 +62,6 @@
 			qcom,qos-off = <0x1000>;
 			qcom,bus-type = <1>;
 			qcom,util-fact = <154>;
-			clock-names = "bus_clk", "bus_a_clk";
-			clocks = <&rpmcc SYSMMNOC_MSMBUS_CLK>,
-				<&rpmcc SYSMMNOC_MSMBUS_A_CLK>;
 		};
 
 		/*BIMC Masters*/

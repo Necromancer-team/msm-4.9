@@ -29,11 +29,8 @@
 	clocks = <&gcc GCC_USB_HS_AHB_CLK>,
 			 <&gcc GCC_USB_HS_SYSTEM_CLK>,
 			 <&gcc GCC_USB2A_PHY_SLEEP_CLK>,
-			 <&rpmcc BIMC_USB_CLK>,
-			 <&rpmcc SNOC_USB_CLK>,
-			 <&rpmcc PNOC_USB_CLK>,
 			 <&gcc GCC_USB_HS_PHY_CFG_AHB_CLK>,
-			 <&rpmcc CXO_SMD_OTG_CLK>;
+			 <&rpmcc RPM_SMD_XO_CLK_SRC>;
 
 	qcom,usbbam@78c4000 {
 		/delete-property/ qcom,reset-bam-on-disconnect;
@@ -233,8 +230,8 @@
 		qcom,ipa-hw-mode = <0>; /* IPA hw type = Normal */
 		qcom,wan-rx-ring-size = <192>; /* IPA WAN-rx-ring-size*/
 		qcom,lan-rx-ring-size = <192>; /* IPA LAN-rx-ring-size*/
-		clock-names = "core_clk";
-		clocks = <&rpmcc RPM_SMD_IPA_CLK>;
+		//clock-names = "core_clk";
+		//clocks = <&rpmcc RPM_SMD_IPA_CLK>;
 		qcom,ee = <0>;
 		qcom,use-ipa-tethering-bridge;
 		qcom,modem-cfg-emb-pipe-flt;

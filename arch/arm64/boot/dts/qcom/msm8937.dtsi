@@ -978,13 +978,9 @@
 		clocks = <&gcc GCC_USB_HS_AHB_CLK>,
 			 <&gcc GCC_USB_HS_SYSTEM_CLK>,
 			 <&gcc GCC_USB2A_PHY_SLEEP_CLK>,
-			 <&rpmcc BIMC_USB_A_CLK>,
-			 <&rpmcc SNOC_USB_A_CLK>,
-			 <&rpmcc PNOC_USB_A_CLK>,
 			 <&gcc GCC_USB_HS_PHY_CFG_AHB_CLK>,
-			 <&rpmcc CXO_SMD_OTG_CLK>;
+			 <&rpmcc RPM_SMD_XO_CLK_SRC>;
 		clock-names = "iface_clk", "core_clk", "sleep_clk",
-				"bimc_clk", "snoc_clk", "pcnoc_clk",
 				"phy_csr_clk", "xo";
 		qcom,bus-clk-rate = <748800000 200000000 100000000>;
 		qcom,max-nominal-sysclk-rate = <133330000>;
@@ -1747,7 +1743,7 @@
 		qcom,vdd_pll = <1800000>;
 		vdd_mss-uV = <RPM_SMD_REGULATOR_LEVEL_TURBO>;
 
-		clocks = <&rpmcc CXO_SMD_PIL_MSS_CLK>,
+		clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
 			 <&gcc GCC_MSS_CFG_AHB_CLK>,
 			 <&gcc GCC_MSS_Q6_BIMC_AXI_CLK>,
 			 <&gcc GCC_BOOT_ROM_AHB_CLK>;
@@ -1795,7 +1791,7 @@
 		qcom,proxy-reg-names = "vdd_cx";
 		qcom,vdd_cx-uV-uA = <RPM_SMD_REGULATOR_LEVEL_TURBO 100000>;
 
-		clocks = <&rpmcc CXO_SMD_PIL_PRONTO_CLK>,
+		clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
 			 <&gcc GCC_CRYPTO_CLK>,
 			 <&gcc GCC_CRYPTO_AHB_CLK>,
 			 <&gcc GCC_CRYPTO_AXI_CLK>,
@@ -1840,7 +1836,7 @@
 		vdd_pronto_pll-supply = <&pm8937_l7>;
 		proxy-reg-names = "vdd_pronto_pll";
 		vdd_pronto_pll-uV-uA = <1800000 18000>;
-		clocks = <&rpmcc CXO_SMD_PIL_PRONTO_CLK>,
+		clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
 			 <&gcc GCC_CRYPTO_CLK>,
 			 <&gcc GCC_CRYPTO_AHB_CLK>,
 			 <&gcc GCC_CRYPTO_AXI_CLK>,
@@ -1984,13 +1980,10 @@
 		gpios = <&tlmm 76 0>, <&tlmm 77 0>, <&tlmm 78 0>,
 			<&tlmm 79 0>, <&tlmm 80 0>;
 
-		clocks = <&rpmcc CXO_SMD_WLAN_CLK>,
-			 <&rpmcc RPM_SMD_RF_CLK2>,
-			 <&rpmcc SNOC_WCNSS_A_CLK>;
+		clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
+			 <&rpmcc RPM_SMD_RF_CLK2>;
 
-		clock-names = "xo", "rf_clk", "snoc_wcnss";
-
-		qcom,snoc-wcnss-clock-freq = <200000000>;
+		clock-names = "xo", "rf_clk";
 
 		qcom,smem-states = <&apps_smsm 10>, <&apps_smsm 9>, <&apps_smsm 12>;
 		qcom,smem-state-names = "tx-enable", "tx-rings-empty", "wake-state";
