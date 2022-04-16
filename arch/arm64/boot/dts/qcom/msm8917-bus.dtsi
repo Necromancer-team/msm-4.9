@@ -942,7 +942,7 @@
 		qcom,spdm-client = <0>;
 
 		clock-names = "cci_clk";
-		clocks = <&clock_cpu clk_a53_bc_clk>;
+		clocks = <&apsscc APCS_MUX_CCI_CLK>;
 
 		qcom,bw-upstep = <400>;
 		qcom,bw-dwnstep = <2800>;
